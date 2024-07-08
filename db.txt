@@ -1,0 +1,1361 @@
+CREATE TABLE user (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_login VARCHAR(50),
+    user_password VARCHAR(50),
+    user_name VARCHAR(50),
+    lesson_id INTEGER,
+
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE
+);
+
+CREATE TABLE article_category (
+    article_category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_category_name VARCHAR(50)
+);
+
+CREATE TABLE article (
+    article_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_name VARCHAR(50),
+    article_content TEXT,
+    article_category_id INTEGER,
+
+    FOREIGN KEY (article_category_id) REFERENCES article_category(article_category_id) ON DELETE CASCADE
+);
+
+CREATE TABLE fav_article (
+    article_id INTEGER,
+    user_id INTEGER,
+
+    PRIMARY KEY (article_id, user_id),
+    FOREIGN KEY (article_id) REFERENCES article(article_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE vocabulary (
+    vocabulary_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    korean VARCHAR(50),
+    transcription VARCHAR(50),
+    russian VARCHAR(50)
+);
+
+CREATE TABLE fav_vocabulary (
+    vocabulary_id INTEGER,
+    user_id INTEGER,
+
+    PRIMARY KEY (vocabulary_id, user_id),
+    FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(vocabulary_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson (
+    lesson_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lesson_title VARCHAR(50),
+    lesson_description TEXT,
+    lesson_short_description TEXT
+);
+
+CREATE TABLE task_voc (
+    task_voc_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_description VARCHAR(80),
+    max_task_score INTEGER
+);
+
+CREATE TABLE lesson_task_voc (
+    lesson_id INTEGER,
+    task_voc_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_voc_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_voc_id) REFERENCES task_voc(task_voc_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_voc_progress (
+    task_voc_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_voc_id, user_id),
+    FOREIGN KEY (task_voc_id) REFERENCES task_voc(task_voc_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_voc_vocabulary (
+    task_voc_id INTEGER,
+    vocabulary_id INTEGER,
+
+    PRIMARY KEY (task_voc_id, vocabulary_id),
+    FOREIGN KEY (task_voc_id) REFERENCES task_voc(task_voc_id) ON DELETE CASCADE,
+    FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(vocabulary_id) ON DELETE CASCADE
+);
+
+CREATE TABLE theory (
+    theory_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    theory_content TEXT
+);
+
+CREATE TABLE fav_theory (
+    theory_id INTEGER,
+    user_id INTEGER,
+
+    PRIMARY KEY (theory_id, user_id),
+    FOREIGN KEY (theory_id) REFERENCES theory(theory_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_theory (
+    task_theory_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_description TEXT,
+    max_task_score INTEGER
+);
+
+
+CREATE TABLE task_theory_theory (
+    task_theory_id INTEGER,
+    theory_id INTEGER,
+
+    PRIMARY KEY (task_theory_id, theory_id),
+    FOREIGN KEY (task_theory_id) REFERENCES task_theory(task_theory_id) ON DELETE CASCADE,
+    FOREIGN KEY (theory_id) REFERENCES theory(theory_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE lesson_task_theory (
+    lesson_id INTEGER,
+    task_theory_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_theory_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_theory_id) REFERENCES task_theory(task_theory_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE task_theory_progress (
+    task_theory_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_theory_id, user_id),
+    FOREIGN KEY (task_theory_id) REFERENCES task_theory(task_theory_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE dialogue (
+    dialogue_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    dialogue_content TEXT
+);
+
+CREATE TABLE task_dialogue (
+    task_dia_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_description TEXT,
+    task_content TEXT,
+    max_task_score INTEGER
+);
+
+CREATE TABLE task_dia_progress (
+    task_dia_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_dia_id, user_id),
+    FOREIGN KEY (task_dia_id) REFERENCES task_dialogue(task_dia_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_dialogue_dialogue (
+    task_dia_id INTEGER,
+    dialogue_id INTEGER,
+
+    PRIMARY KEY (task_dia_id, dialogue_id),
+    FOREIGN KEY (task_dia_id) REFERENCES task_dialogue(task_dia_id) ON DELETE CASCADE,
+    FOREIGN KEY (dialogue_id) REFERENCES dialogue(dialogue_id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_task_dia (
+    lesson_id INTEGER,
+    task_dia_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_dia_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_dia_id) REFERENCES task_dialogue(task_dia_id) ON DELETE CASCADE
+);
+
+CREATE TABLE complete_word (
+    complete_word_id INTEGER PRIMARY KEY,
+    word VARCHAR(20)
+);
+
+CREATE TABLE complete_sentence_exercise (
+    complete_sentence_exercise_id INTEGER PRIMARY KEY,
+    sentence VARCHAR(80)
+);
+
+CREATE TABLE complete_sentence_exersice_word (
+    complete_sentence_exercise_id INTEGER,
+    complete_word_id INTEGER,
+    is_correct INTEGER,
+
+    PRIMARY KEY (complete_sentence_exercise_id, complete_word_id),
+    FOREIGN KEY (complete_sentence_exercise_id) REFERENCES complete_sentence_exercise(complete_sentence_exercise_id) ON DELETE CASCADE,
+    FOREIGN KEY (complete_word_id) REFERENCES complete_word(complete_word_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_sentence (
+    task_complete_sentence_id INTEGER PRIMARY KEY,
+    task_description TEXT,
+    max_task_score INTEGER
+);
+
+CREATE TABLE task_complete_sentence_exercise (
+    task_complete_sentence_id INTEGER,
+    complete_sentence_exercise_id INTEGER,
+
+    PRIMARY KEY (task_complete_sentence_id, complete_sentence_exercise_id),
+    FOREIGN KEY (task_complete_sentence_id) REFERENCES task_complete_sentence(task_complete_sentence_id) ON DELETE CASCADE,
+    FOREIGN KEY (complete_sentence_exercise_id) REFERENCES complete_sentence_exercise(complete_sentence_exercise_id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_task_complete_sentence (
+    lesson_id INTEGER,
+    task_complete_sentence_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_complete_sentence_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_complete_sentence_id) REFERENCES task_complete_sentence(task_complete_sentence_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_sentence_progress (
+    task_complete_sentence_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_complete_sentence_id, user_id),
+    FOREIGN KEY (task_complete_sentence_id) REFERENCES task_complete_sentence(task_complete_sentence_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_missing_word_exercise (
+    task_missing_word_exercise_id INTEGER PRIMARY KEY,
+    task_description TEXT,
+    max_task_score INTEGER
+);
+
+CREATE TABLE task_missing_word_exercise_voc (
+    task_missing_word_exercise_id INTEGER,
+    vocabulary_id INTEGER,
+
+    PRIMARY KEY (task_missing_word_exercise_id, vocabulary_id),
+    FOREIGN KEY (task_missing_word_exercise_id) REFERENCES task_missing_word_exercise(task_missing_word_exercise_id) ON DELETE CASCADE,
+    FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(vocabulary_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_missing_word_exercise_progress (
+    task_missing_word_exercise_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_missing_word_exercise_id, user_id),
+    FOREIGN KEY (task_missing_word_exercise_id) REFERENCES task_missing_word_exercise(task_missing_word_exercise_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_task_missing_word_exercise (
+    lesson_id INTEGER,
+    task_missing_word_exercise_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_missing_word_exercise_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_missing_word_exercise_id) REFERENCES task_missing_word_exercise(task_missing_word_exercise_id) ON DELETE CASCADE
+);
+
+CREATE TABLE complete_dialog (
+    complete_dialog_id INTEGER PRIMARY KEY,
+    sentence_A TEXT,
+    sentence_B TEXT,
+    nessassary_word VARCHAR(20),
+    time VARCHAR(20),
+    style VARCHAR(20)
+);
+
+CREATE TABLE task_complete_dialog (
+    task_complete_dialog_id INTEGER PRIMARY KEY,
+    task_description TEXT,
+    max_task_score INTEGER
+);
+
+CREATE TABLE lesson_task_complete_dialog(
+    lesson_id INTEGER,
+    task_complete_dialog_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_complete_dialog_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_complete_dialog_id) REFERENCES task_complete_dialog(task_complete_dialog_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_dialog_dialog (
+    task_complete_dialog_id INTEGER,
+    complete_dialog_id INTEGER,
+
+    PRIMARY KEY (task_complete_dialog_id, complete_dialog_id),
+    FOREIGN KEY (task_complete_dialog_id) REFERENCES task_complete_dialog(task_complete_dialog_id) ON DELETE CASCADE,
+    FOREIGN KEY (complete_dialog_id) REFERENCES complete_dialog(complete_dialog_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_dialog_progress (
+    task_complete_dialog_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_complete_dialog_id, user_id),
+    FOREIGN KEY (task_complete_dialog_id) REFERENCES task_complete_dialog(task_complete_dialog_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE complete_dialog_with_words (
+    complete_dialog_with_words_id INTEGER PRIMARY KEY,
+    question TEXT,
+    nessassary_nouns VARCHAR(60),
+    nessassary_verbs VARCHAR(60),
+    time VARCHAR(20),
+    style VARCHAR(20)
+);
+
+CREATE TABLE task_complete_dialog_with_words (
+    task_complete_dialog_with_words_id INTEGER PRIMARY KEY,
+    task_description TEXT,
+    max_task_score INTEGER
+);
+
+CREATE TABLE lesson_task_complete_dialog_with_words(
+    lesson_id INTEGER,
+    task_complete_dialog_with_words_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_complete_dialog_with_words_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_complete_dialog_with_words_id) REFERENCES task_complete_dialog_with_words(task_complete_dialog_with_words_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_dialog_with_words_dialog (
+    task_complete_dialog_with_words_id INTEGER,
+    complete_dialog_with_words_id INTEGER,
+
+    PRIMARY KEY (task_complete_dialog_with_words_id, complete_dialog_with_words_id),
+    FOREIGN KEY (task_complete_dialog_with_words_id) REFERENCES task_complete_dialog_with_words(task_complete_dialog_with_words_id) ON DELETE CASCADE,
+    FOREIGN KEY (complete_dialog_with_words_id) REFERENCES complete_dialog_with_words(complete_dialog_with_words_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_complete_dialog_with_words_progress (
+    task_complete_dialog_with_words_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_complete_dialog_with_words_id, user_id),
+    FOREIGN KEY (task_complete_dialog_with_words_id) REFERENCES task_complete_dialog_with_words(task_complete_dialog_with_words_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE writing_exercise (
+    writing_exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    theme TEXT,
+    style VARCHAR(20),
+    time VARCHAR(20),
+    sentence_count INTEGER
+);
+
+CREATE TABLE task_writing_exercise (
+    task_writing_exercise_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    max_task_score INTEGER,
+    task_description TEXT,
+    writing_exercise_id INTEGER,
+
+    FOREIGN KEY (writing_exercise_id) REFERENCES writing_exercise(writing_exercise_id) ON DELETE CASCADE
+);
+
+CREATE TABLE task_writing_exercise_progress (
+    task_writing_exercise_id INTEGER,
+    user_id INTEGER,
+    user_score INTEGER,
+
+    PRIMARY KEY (task_writing_exercise_id, user_id),
+    FOREIGN KEY (task_writing_exercise_id) REFERENCES task_writing_exercise(task_writing_exercise_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE lesson_task_writing_exercise(
+    lesson_id INTEGER,
+    task_writing_exercise_id INTEGER,
+
+    PRIMARY KEY (lesson_id, task_writing_exercise_id),
+    FOREIGN KEY (lesson_id) REFERENCES lesson(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (task_writing_exercise_id) REFERENCES task_writing_exercise(task_writing_exercise_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO writing_exercise (theme, sentence_count, style, time)
+VALUES
+    ('Поприветствуйте человека и представьтесь ему, используя официально-вежливый стиль.', 3, 'official', 'present'),
+    ('Опишите местоположение нескольких предметов в вашей комнате, используя разговорно-вежливый стиль.', 2, 'friendly', 'present'),
+    ('Какие блюда вы предпочитаете есть на ужин? Используйте официально-вежливый стиль и настоящее время в своем ответе.', 2, 'official', 'present'),
+    ('Опишите вашу повседневную утреннюю рутину. Используйте разговорно-вежливый стиль и настоящее время в своем ответе.', 2, 'friendly', 'present'),
+    ('Что вы делали вчера вечером? Используйте прошедшее время в своем ответе.', 2, 'friendly', 'past');
+
+INSERT INTO task_writing_exercise (writing_exercise_id, max_task_score, task_description)
+VALUES
+    (1, 40, 'Напишите несколько предложений по заданной теме'),
+    (2, 40, 'Напишите несколько предложений по заданной теме'),
+    (3, 40, 'Напишите несколько предложений по заданной теме'),
+    (4, 40, 'Напишите несколько предложений по заданной теме'),
+    (5, 40, 'Напишите несколько предложений по заданной теме');
+
+INSERT INTO lesson_task_writing_exercise (lesson_id, task_writing_exercise_id)
+VALUES
+    (3, 1),
+    (4, 2),
+    (5, 3),
+    (6, 4),
+    (7, 5);
+
+INSERT INTO complete_dialog_with_words(question, nessassary_nouns, nessassary_verbs, time, style)
+VALUES
+    ('샤키라는 스페인 사람입니까?', '샤키라;미국', '', 'present', 'official'),
+    ('가수예요?', '가수', '', 'present', 'friendly'),
+    ('우디렌은 어느 나라 사람이에요?', '우디렌;미국', '', 'present', 'friendly'),
+    ('영화 배우예요?', '영화감독', '', 'present', 'friendly'),
+    ('안나는 독일의 대통령입니까?', '안나;독일의;총리', '', 'present', 'official');
+
+INSERT INTO task_complete_dialog_with_words(task_description, max_task_score)
+VALUES
+    ('Заполните пропуски с помощью слов, указанных выше. Некоторым словам требуется изменить окончание. Обратите внимание на существительные, время и стиль речи, используемый в диалоге.', 40);
+
+INSERT INTO lesson_task_complete_dialog_with_words(lesson_id, task_complete_dialog_with_words_id)
+VALUES
+    (3, 1);
+
+INSERT INTO task_complete_dialog_with_words_dialog(task_complete_dialog_with_words_id, complete_dialog_with_words_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5);
+
+
+INSERT INTO complete_dialog (sentence_A, sentence_B, nessassary_word, time, style)
+VALUES
+    ('햄버거를;?', ';.', '먹다', 'present', 'official'),
+    ('뭐 합니까?', '친구를;.', '기다리다', 'present', 'official'),
+    ('뭐 합니까?', '일기를;.', '쓰다', 'present', 'official'),
+    ('텔레비전을;?', '네, 텔레비전을;.', '보다', 'present', 'friendly'),
+    ('뭐 해요?', ';.', '전화하다', 'present', 'friendly'),
+    ('물을;?', '네, 물을;.', '마시다', 'present', 'friendly'),
+    ('토요일에 영화를 봤어요?', '네,;.', '보다', 'past', 'friendly'),
+    ('어제 뭐 했어요?', '나는 춤을;.', '추다', 'past', 'friendly'),
+    ('주말에 뭐 했어요?', '음악을 ;.', '듣다', 'past', 'official');
+
+INSERT INTO task_complete_dialog(task_description, max_task_score)
+VALUES
+    ('Заполните пропуски в диалогах, с помощью слов, указанных в скобках. Измените слова, используя правила настоящего времени и официально-вежливого стиля.', 40),
+    ('Заполните пропуски в диалогах, с помощью слов, указанных в скобках. Измените слова, используя правила настоящего времени и разговорно-вежливого стиля.', 40),
+    ('Заполните пропуски в диалогах, с помощью слов, указанных в скобках. Измените слова, используя правила прошедшего времени и официально-вежливого стиля.', 40);
+
+
+INSERT INTO task_complete_dialog_dialog(task_complete_dialog_id, complete_dialog_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (2, 4),
+    (2, 5),
+    (2, 6),
+    (3, 7),
+    (3, 8),
+    (3, 9);
+
+INSERT INTO lesson_task_complete_dialog(lesson_id, task_complete_dialog_id)
+VALUES
+    (5, 1),
+    (6, 2),
+    (7, 3);
+
+
+INSERT INTO task_missing_word_exercise(task_description, max_task_score)
+VALUES
+    ('Посмотрите на картинку и вставьте пропущенное слово:', 20);
+
+INSERT INTO task_missing_word_exercise_voc(task_missing_word_exercise_id, vocabulary_id)
+VALUES
+    (1, 14),
+    (1, 13),
+    (1, 15);
+
+INSERT INTO lesson_task_missing_word_exercise(lesson_id, task_missing_word_exercise_id)
+VALUES
+    (2, 1);
+
+INSERT INTO complete_sentence_exercise(sentence)
+VALUES
+    ('저는 ; 예요'),
+    ('저 ; 희사원잉에요'),
+    ('선생님 ;'),
+    ('안나 ; 독일의 대통령입니까?'),
+    ('토요일에 영화 ; 봤어요?'),
+    ('텔레비전 ; 에 꽃병이 있어요.'),
+    ('이민우 씨 ; 에 캐럴 씨가 있어요.'),
+    (';씨 왼쪽에 가방이 있어요.'),
+    ('가방 ; 에 책이 있어요.'),
+    ('신문이 가방 ; 에 있어요.'),
+    ('이민우 씨가 ; 오른쪽에 있어요.');
+
+INSERT INTO complete_word(word)
+VALUES
+    ('선생님'),
+    ('학생'),
+    ('의사'),
+    ('는'),
+    ('은'),
+    ('응'),
+    ('예요'),
+    ('이예요'),
+    ('에여'),
+    ('는'),
+    ('은'),
+    ('응'),
+    ('사이'),
+    ('뒤'),
+    ('를'),
+    ('위'),
+    ('앞'),
+    ('밖'),
+    ('사이'),
+    ('뒤'),
+    ('밖'),
+    ('오른쪽'),
+    ('웨슬리'),
+    ('옆'),
+    ('가운데'),
+    ('왼쪽'),
+    ('안'),
+    ('사이'),
+    ('가운데'),
+    ('밑(= 아래)'),
+    ('댄씨'),
+    ('앞'),
+    ('사이');
+
+
+INSERT INTO task_complete_sentence(task_description, max_task_score)
+VALUES
+    ('Выберите верный ответ из предложенных:', 30),
+    ('Посмотрите на картинку и вставьте пропущенные слова:', 60);
+
+INSERT INTO complete_sentence_exersice_word(complete_sentence_exercise_id, complete_word_id, is_correct)
+VALUES
+    (1, 1, 0),
+    (1, 2, 0),
+    (1, 3, 1),
+    (2, 4, 1),
+    (2, 5, 0),
+    (2, 6, 0),
+    (3, 7, 0),
+    (3, 8, 1),
+    (3, 9, 0),
+    (4, 10, 1),
+    (4, 11, 0),
+    (4, 12, 0),
+    (5, 13, 0),
+    (5, 14, 0),
+    (5, 15, 1),
+    (6, 16, 1),
+    (6, 17, 0),
+    (6, 18, 0),
+    (7, 19, 0),
+    (7, 20, 1),
+    (7, 21, 0),
+    (8, 22, 0),
+    (8, 23, 1),
+    (8, 24, 0),
+    (9, 25, 0),
+    (9, 26, 0),
+    (9, 27, 1),
+    (10, 28, 0),
+    (10, 29, 0),
+    (10, 30, 1),
+    (11, 31, 1),
+    (11, 32, 0),
+    (11, 33, 0);
+
+INSERT INTO task_complete_sentence_exercise(task_complete_sentence_id, complete_sentence_exercise_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5),
+    (2, 6),
+    (2, 7),
+    (2, 8),
+    (2, 9),
+    (2, 10),
+    (2, 11);
+
+INSERT INTO lesson_task_complete_sentence(lesson_id, task_complete_sentence_id)
+VALUES
+    (2, 1),
+    (4, 2);
+
+INSERT INTO theory(theory_content)
+VALUES
+    ('<b>Корейский алфавит</b><br>
+    Корейский алфавит называется хангыль. Современный фонетический алфавит состоит из 40 букв: 21 гласной и 19 согласных.<br>
+    <p><table>
+    <tr><th>Буква</th><th>Произношение</th></tr>
+    <tr><td>ㅏ</td><td>а</td></tr> 
+    <tr><td>ㅑ</td><td>я</td></tr>
+    <tr><td>ㅓ</td><td>о (более открытая)</td></tr>
+    <tr><td>ㅕ</td><td>ё (более открытая)</td></tr>
+    <tr><td>ㅗ</td><td>о</td></tr>
+    <tr><td>ㅛ</td><td>ё</td></tr>
+    <tr><td>ㅜ</td><td>у</td></tr>
+    <tr><td>ㅠ</td><td>ю</td></tr>
+    <tr><td>ㅡ</td><td>ы</td></tr>
+    <tr><td>ㅣ</td><td>и</td></tr>
+    </table></p>
+    <b>Сложные гласные (дифтонги):</b><br>
+    Они состоят из 2 простых гласных, пишутся слитно и произносятся как один звук. 
+    <p>ㅜ + ㅣ = ㅟ<br>
+    ㅗ + ㅏ = ㅘ<br>
+    ㅜ + ㅓ = ㅝ<br>
+    ㅡ + ㅣ = ㅢ<br>
+    ㅗ + ㅣ = ㅚ<br>
+    ㅏ + ㅣ = ㅐ<br>
+    ㅓ + ㅣ = ㅔ<br>
+    ㅕ + ㅣ = ㅖ<br>
+    ㅑ + ㅣ = ㅒ<br>
+    ㅗ + ㅐ = ㅙ<br>
+    ㅜ + ㅔ = ㅞ</p>
+    <b>Согласные:</b><br>
+    <p><table>
+    <tr><th>Буква</th><th>Транскрипция</th><th>Звук в начале слога</th></tr>
+    <tr><td>ㄱ</td><td>기역</td><td>(киёк)	к</td></tr> 
+    <tr><td>ㄴ</td><td>니은</td><td>(ниын)	н</td></tr>
+    <tr><td>ㄷ</td><td>디귿</td><td>(тигыт)	т</td></tr>
+    <tr><td>ㄹ</td><td>리을</td><td>(риыль)	р</td></tr>
+    <tr><td>ㅁ</td><td>미음</td><td>(миым)	м</td></tr>
+    <tr><td>ㅂ</td><td>비읍</td><td>(пиып)	п</td></tr>
+    <tr><td>ㅅ</td><td>시옷</td><td>(сиот)	с/щ</td></tr>
+    <tr><td>ㅇ</td><td>이응</td><td>(иын)	не произносится</td></tr>
+    <tr><td>ㅈ</td><td>지읒</td><td>(чиыт)	ч</td></tr>
+    </table></p>
+
+    <b>Придыхательные согласные</b><br>
+    Главная их особенность в том, что при произношении добавляется почти незаметный звук “х”. Эти буквы нужно произносить на выдохе.<br>
+    <p>ㄱ → ㅋ (키읔 / кхиык)<br>
+    ㅈ → ㅊ (치읓 / чхиыт)<br>
+    ㅇ → ㅎ (히읗 / хиыт)<br>
+    ㄷ → ㅌ (티읕 / тхиыт)<br>
+    ㅂ → ㅍ (피읖 / пхиып)</p>
+    <b>Сдвоенные согласные</b><br>
+    Они выглядят аналогично обычным согласным буквам, но удвоены. Их звучание более краткое и звонкое.<br>
+    <p>ㄷ → ㄸ (쌍디귿 / ссандигыт)<br>
+    ㅅ → ㅆ (쌍시옷 / ссансиот)<br>
+    ㅂ → ㅃ (쌍비읍 / ссанбиып)<br>
+    ㅈ → ㅉ (쌍지읒 / ссанджиыт)<br>
+    ㄱ → ㄲ (쌍기역 / ссангиёк)</p>
+    <b>Правила чтения</b><br>
+    <ol>
+    <li>На конце слога читаются следующие согласные: <b>ㄱ,ㄴ,ㄷ,ㅁ,ㅂ,ㅇ,ㄹ</b>. Буквы <b>ㅋ</b> и <b>ㄲ</b> читаются как <b>ㄱ</b>. Буквы <b>ㅍ</b> и <b>ㅃ</b> читаются как <b>ㅂ</b>. Остальные согласные читаются как <b>ㄷ</b>.</li>
+    <li>Иногда слог может оканчиваться на две согласных. В этом случае читается только одна из них. Можно выделить три группы чтений.
+    В первой группе из двух букв читается только первая. Это происходит в буквосочетаниях <b>ㅄ,ㄽ, ㄾ,ㅀ,ㄳ,ㄵ,ㄶ</b>. При этом если следующий слог начинается с гласного, то читаются обе буквы, за исключением случаев с <b>ㅀ</b> и <b>ㄶ</b>, в которых <b>ㅎ</b> никогда не читается.
+    Ко второй группе относятся буквосочетания <b>ㄼ,ㄿ</b>. В них читается первая согласная.
+    К третьей группе относятся буквосочетания <b>ㄺ,ㄻ</b>. В них читается только вторая буква: <b>읽 [익]</b></li>
+    <li>Правила чтения буквы <b>ㄹ</b>. В середине слога после согласной <b>ㄹ</b> может читаться либо как <b>ㄹ</b>, либо как <b>ㄴ</b>. При этом предшествующий согласный часто меняет свое чтение.
+    <b>ㄴ</b> перед или после <b>ㄹ</b> читается как <b>ㄹ</b>. При этом <b>ㄹ</b> читается как "ль".
+    В остальных случаях <b>ㄹ</b> читается как <b>ㄴ</b>. При этом перед ней <b>ㅁ</b> и <b>ㅇ</b> не меняют своего чтения, <b>ㄱ</b> читается как <b>ㅇ</b>, <b>ㄷ</b> читается как <b>ㄴ, ㅂ</b> читается как <b>ㅁ</b>.</li>
+    </ol>
+    Подробнее с примерами:<br>
+    <b>Правила ассимиляции:</b><br>
+    <ol>
+    <li>ㄱ + ㄹ = ㅇ и ㄴ 폭로 [퐁노] разоблачение</li>
+    <li>ㄴ + ㄹ = ㄹ и ㄹ 근로자 [글로자] трудящийся
+    Аналогично ㄹ + ㄴ = ㄹ и ㄹ 설날 [설랄] первый день года (1-е января по лунному календарю)</li>
+    <li>ㅁ + ㄹ = ㅁ и ㄴ 침략 [침냑] агрессия</li>
+    <li>ㅂ + ㄹ = ㅁ и ㄴ 압력 [암녁] давление</li>
+    <li>ㅇ + ㄹ = ㅇ и ㄴ 강령 [강녕] программа, платформа</li>
+    <li>Буква ㄷ вместе с последующим ㅎ произносятся как ㅌ. Перед ㅅ произносится как ㅅ. Перед 이 читается как "дж": 굳이 (куджи).</li>
+    <li>Буква ㅌ перед йотированной гласной читается как ㅊ: 붙이다 (пучхида) "приклеивать".</li>
+    <li>Буква ㄹ перед ㅎ читается как "р": 말하다 (мархада) "говорить".</li>
+    <li>Глухой согласный читается после ㅎ в конце слога как придыхательный: 파랗다 (пхаратха) "голубой".</li>
+    <li>ㄷ (и буквы ㅅㅈㅌㅎㅊㅆ, которые читаются как ㄷ) перед ㄹ ㅁ ㄴ читается как ㄴ. Примеры:
+    몇명 [면명] 다섯 명 [다선 명] 넣는 [넌는] 여섯 명 [여선 명] 끝내다 [끈내다]</li>
+    <li>ㅂ перед ㄴ или ㅁ произносится как ㅁ.
+    ㄱ перед ㄴ или ㅁ произносится как ㄴ.</li></ol>
+
+    <b>Порядок слов в корейском предложении</b><br>
+    <ol>
+    <li>Большинство предложений в корейском языке составлены по схеме <b>субъект-объект-глагол (SOV)</b>. Это означает, что вы вводите сначала подлежащее, затем объект и, наконец, глагол. Стоит отметить, что определение стоит перед определяемым словом, иными словами прилагательное перед существительным, наречие перед глаголом.
+    저는 한국어를 공부해요.
+    Я корейский изучаю.
+    Подлежащее + объект + глагол.</li>
+    <li>Иногда для придания смыслу предложению не требуется объект. В результате такого рода предложений образуется шаблон <b>подлежащее-глагол (SV)</b>.
+    Подлежащее + глагол.
+    Дедушка пришел.
+	할아버지가  오셨어요.</li>
+    <li>Иногда в предложении есть только подлежащее и прилагательное, что приводит к схеме <b>подлежащее-прилагательное (SA)</b>. В корейском языке прилагательные ведут себя как глаголы с точки зрения их размещения и спряжения.</li></ol>
+
+    <b>Предикативы</b></br>
+    <p>В корейском языке сказуемое может быть выражено предикативом или именем со связками <b>이다 (быть, являться)</b> или <b>아니다 (не быть, не являться)</b>. В начальной форме все предикативы оканчиваются на слог <b>다</b>:
+    가다: 가 (основа) + 다 (окончание начальной формы)
+    읽다, 좋다, 맛있다.
+    Корейские предикативы не имеют категории рода и числа. Таким образом, в корейских предложениях, например, таких как «Я иду», «Мы идем» глаголы «иду» и «идем» будут выражаться одной формой.</p>
+
+    <b>Спряжение предикативов</b></br>
+    <p>Корейские предикативы не изменяются по родам и числам, но имеют категорию стиля речи, т.е. демонстрируют взаимоотношения говорящих между собой. Данная категория выражается окончанием. Окончание присоединяется к основе предикатива.</p>
+    Выбор стиля определяется двумя факторами:
+    <ul>
+    <li>отношениями, которые связывают говорящих;</li>
+    <li>их возрастом и социальным положением.</li></ul>
+    <b>В корейском языке есть четыре основных стиля речи:</b></br>
+    <ol>
+    <li>Формально-вежливый — выражается окончаниями <b>-ㅂ니다 / -습니다.</b>
+    Вежливо-официальный стиль употребляется, когда собеседников связывают деловые формальные отношения. Например, в таком стиле говорит диктор новостей; оратор, обращаясь к большой аудитории; работник — к своему начальству (как правило, высокому начальству) и т.п. Также этот стиль речи более характерен для мужчин.</li>
+    <li>Разговорно-вежливый — выражается окончанием <b>-아/ -어요.</b>
+    Данный стиль используют, когда отношения собеседников неформальные или же они хотят придать им такой характер. Он чаще всего употребляется, когда дети обращаются к старшим родственникам (бабушкам, дедушками, родителям); в общении между коллегами, если они достаточно близко общаются и в отношении старших по возрасту товарищей; в сфере сервиса (между продавцом и клиентом); при обращении к прохожим на улице и т.д.</li>
+    <li>Дружеский — выражается окончаниями <b>-아/ -어/ -여.</b>
+    Этот стиль речи характерен для близких друзей, сверстников или же при обращении старших к младшим, если их связывают родственные или другие близкие отношения. Так говорят старшие родственники, обращаясь к младшим, начальник — к подчиненному в неформальной обстановке.</li>
+    <li>Простая письменная речь — выражается окончанием <b>-다.</b>
+    Употребляется в письменной речи, адресованной массовому читателю, например, в газетах, научных текстах, публицистике, художественных текстах (за исключением прямой речи героев). Не употребляется в письмах, обращенных к конкретному человеку!</li>
+    </ol>'),
+    ('Связка <b>이다</b> присоединяется к начальной форме существительного и используется для того, чтобы показать, что сказуемым предложения является существительное. Она также может использоваться для подчеркивания чего-либо. Утвердительной формой связки в формально-вежливом стиле является форма <b>입니다</b>, вопросительной <b>—입니까?</b>.<br> В разговорно-вежливом стиле для утверждения и вопроса используется одна и та же форма <b>예요/이에요</b>.<br> При вопросе интонация повышается к концу предложения: <b>예요/이에요?</b> Если начальная форма существительного, к которому присоединяется связка, оканчивается на гласную, то используется форма <b>예요</b>, если на согласную, то <b>이에요</b>. Отрицательной формой связки является <b>아이다</b>.'),
+    ('В корейском языке есть так называемая выделительная частица <b>-은 / -는</b>. Данная частица:<ul><li>выделяет тему предложения;</li>
+    <li>делает акцент на ключевом слове предложения;</li>
+    <li>противопоставляет данное слово другому.</li></ul>
+    <p>К существительным, оканчивающимся на гласную, присоединяется частица <b>-는</b>, к существительным, оканчивающимся на согласную, — <b>-은</b>.</p>
+    <b>Пример:</b><br>
+    А: 박규호 씨는 한국 사람입니다.<br>
+    В: 저는 러시아 사람이에요.<br>
+    <p>Для того, чтобы поприветствовать собеседника или сказать ему до свидания можно использовать следующие слова:</p>
+    <ol>
+    <li>안녕하세요? — Здравствуйте.</li>
+    <li>오랜만이에요. — Давно не виделись.</li>
+    <li>어떻게 지냈어요? или 잘 지냈어요?  — Как поживали?</li>
+    <li>좋은 하루 보내세요. — Хорошего дня.</li>
+    <li>안녕히 계세요. — До свидания (говорит уходящий, когда уходит).</li>
+    <li>안녕히 가세요. — До свидания (говорят, когда уходит собеседник).</li>
+    </ol>
+    Для того, чтобы представиться собеседнику можно использовать следующие конструкции:
+    <ol>
+    <li>저는 ____ 예요 / 이에요.</li>
+    <li>제 이름은 ____ 예요 / 이에요.</li>
+    <li>저는 ____ 라고 / 이라고 해요.</li>
+    </ol>
+    <b>Пример:</b>
+    <ol>
+    <li>안녕하세요! 저는 막심이에요. —Здравствуйте! Я Максим.</li>
+    <li>제 이름은 현아예요. — Моё имя Хёна.</li>
+    <li>저는 민규라고 해요. — Меня зовут Мингю.</li>
+    </ol>
+    <p>Для того, чтобы спросить кем работает человек, можно использовать следующие выделенные слова.</p>
+    <b>Пример:</b><br>
+    김미경: 무슨 일을 하세요?<br>
+    이현우: 대학생이에요.<br>
+    박수희: 김미경 씨, 직업이 뭐예요?<br>
+    김미경: 디자이너입니다.<br>'),
+    ('<b>있다</b> выражает наличие предмета и его местонахождение и на русский язык может переводиться как «иметься», «находиться». Поэтому <b>있다</b> чаще всего употребляется в таких конструкциях как <b>«Сущ 이/가 Сущ (место) 에 있다»</b> или <b>«Сущ (место) 에 Сущ 이/다 있다»</b>. Порядок слов в данном случае на смысл не влияет.<br>
+    Антонимом <b>있다</b> является <b>없다</b>.<br> 
+    Для обозначения местонахождения <b>«Сущ (место) 에 있다»</b> используются следующие послелоги:<p><b>앞, 뒤, 위, 아래 (= 밑), 옆 (오른쪽, 왼쪽), 가운데, 사이, 안, 밖.</b></p>
+    <b>Пример:</b>
+    <ol>
+    <li>책상 위에 컴퓨터가 있어요. Компьютер находится на столе.</li>
+    <li>책상 아래 (= 책상 밑에) 구두가 있어요. Ботинки находятся под столом.</li>
+    <li>책상 앞에 의자가 있어요. Стул находится перед столом.</li>
+    <li>책상 뒤에 책장이 있어요. Книжный шкаф находится позади стола.</li>
+    <li>책상 옆에 화분하고 옷걸이가 있어요. Растение и вешалка находятся рядом со столом.</li>
+    <li>책상 왼쪽에 화분이 있어요. Растение находится слева от стола.</li>
+    <li>책상 오른쪽에 옷걸이가 있어요. Вешалка находится справа от стола.</li>
+    <li>화분과 옷걸이 사이에 책상이 있어요. Стол находится между вешалкой и растением.</li>
+    <li>책상 가운데에 인형이 있어요. Мишка находится в центре стола.</li>
+    <li>집 안에 강아지가 있어요. Пес находится в домике.</li>
+    <li>집 밖에 고양이가 있어요. Кошка находится вне(за пределами) домике.</li>
+    </ol>
+    <p>있다 также используется для выражения принадлежности «Сущ 이/가 있다» и переводится на русский как «иметь». Антонимом 있다 является 없다.</p>
+    <b>Пример:</b>
+    <ul>
+    <li>나는 언니가 있어요. 동생이 없어요.<br>
+    У меня есть старшая сестра. У меня нет младших братьев и сестер.</li>
+    <li>자전거가 있어요.차가 없어요.<br>
+    У меня есть велосипед. У меня нет машины.</li>
+    </ul>'),
+    ('Настоящее время формально-вежливого стиля образуется с помощью окончания  <b>–(스)ㅂ니다</b>. Данный стиль речи в основном используется при формальном или деловом общении (например, в армии, в новостных передачах, презентациях, на деловых встречах и лекциях).<br>
+    <p><table>
+    <tr><th></th><th>Основы, оканчивающиеся на гласный</th><th>Основы, оканчивающиеся на согласный</th></tr>
+    <tr><td>Повествовательное предложение</td><td>-ㅂ니다</td><td>-습니다</td></tr> 
+    <tr><td>Вопросительное предложение</td><td>-ㅂ니까?</td><td>습니까?</td></tr>
+    </table></p>'),
+    ('Разговорно-вежливый стиль — это уважительная форма, которая чаще всего используется в повседневной жизни. По сравнению с формально-вежливым стилем данный стиль речи более мягок и менее формален. Поэтому, в основном, он используется при общении между членами семьи, друзьями и близкими знакомыми. Повествовательные и вопросительные предложения в разговорно-вежливом стиле выглядят одинаково. Однако повествовательное предложение произносится с постепенным понижением тона, а вопросительное — с повышением.<br>
+    <p>Разговорный стиль образуется присоединением окончания <b>«아요/어요/여요»:</b></p>
+    <ol>
+    <li>Если последний слог в основе глагола оканчивается на <b>ㅏ, ㅑ, ㅗ</b>, то прибавляем <b>아요</b><br>
+    <p>Слово <b>«오다»</b>, основа тут <b>오</b>, значит по правилу прибавляем <b>아요</b><br>
+    <b>오 + 아요 = 와요</b></p>
+
+    <p><b>받다</b> => основа <b>받</b> => в основе в последнем слоге есть <b>ㅏ</b>,
+    значит прибавляем <b>아요</b>
+    <b>받 + 아요 = 받아요</b>
+
+    <b>가다 => 가요</b>
+    <b>보다 => 봐요.</b></p></li>
+
+    <li>Если последний слог в основе глагола оканчивается на <b>ㅓ, ㅜ, ㅣ,</b>
+    то прибавляем <b>어요</b>
+
+    <p>Возьмём наше любимое “кушать” – <b>먹다</b>
+
+    <b>먹다</b> => основа глагола <b>먹</b> => в слоге буква <b>ㅓ,</b>
+    значит прибавляем <b>어요</b>
+    <b>먹 + 어요 = 먹어요</b></p>
+
+    <b>Пример:</b><br>
+    -Что делаешь?<br>
+    –<b>밥을 먹어요</b> – Кушаю
+
+    <p><b>있다 => 있 + 어요 => 있어요</b> (Имею)
+    <b>배우다 => 배우 + 어요 => 배워요</b>(Изучаю).</p></li>
+
+    <li><b>여요</b> – это отдельный случай для глагола <b>하다</b>
+    <p>Просто запомним, что <b>하다</b> всегда превращается в <b>해요</b>
+    <b>하다 => 하 + 여요 => 해요</b></p>
+
+    <p><b>일하다 => 일해요</b>(Работаю)<br>
+    <b>이야기하다 => 이야기해요</b>(Разговариваю)</p>
+
+    <p>Для существительных же прибавляем <b>예요/이에요</b>
+    Если слово оканчивается на гласную, то прибавляем <b>예요</b>
+    А если на согласную, то <b>이에요.</b></p></li>
+'),
+('Формы прилагательных и глаголов в прошедшем времени образуются с помощью присоединения суффикса <b>았/었-</b> к основе слова. Если основа оканчивается на гласные <b>ㅏ</b> или <b>ㅓ</b>, к ней присоединяется окончание <b>- 았어요</b>. Если же основа оканчивается на другой гласный, к ней присоединяется окончание <b>- 었어요</b>. К основам глаголов и прилагательных, оканчивающихся на <b>하다,</b> присоединяется окончание <b>- 였어요</b>, а форма <b>하+ 였어요</b> обычно сокращается до <b>했어요</b>. В формально-вежливом стиле используются окончания <b>았/었습니다</b> и <b>했습니다</b>.
+<p><b>Например:</b><br>
+<ul>
+<li>하루 종일 도서관에서 공부했어요. – Весь день я занимался в библиотеке.</li>
+<li>어제 엄마에게 선물을 사 드렸어요. – Вчера я купил маме подарок.</li>
+<li>아침에 신문을 읽었어요. – Утром я читал газету.</li>
+<li>작년에 이 회사를 다녔어요. – В прошлом году я работал в этой компании.</li>
+</ul>
+</p>
+');
+
+INSERT INTO task_theory(task_description, max_task_score)
+VALUES
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10),
+    ('Внимательно изучите теоретический материал:', 10);
+
+INSERT INTO user (user_login, user_password, user_name, lesson_id) 
+VALUES 
+    ('marinaynwa@yandex.ru', 'm5', 'Marina', 1),
+    ('teacher@gmail.com', '55555', 'Teacher', 1);
+
+INSERT INTO article_category (article_category_name) 
+VALUES 
+    ('На русском языке'),
+    ('На корейском языке');
+
+INSERT INTO article (article_name, article_content, article_category_id) 
+VALUES 
+    ('Достопримечательности Сеула', 
+    "<p>Для иностранцев Корея становится привлекательнее с каждым годом. В этом есть заслуга и популярной культуры, которая помогает людям начать знакомство со страной и её особенностями на расстоянии. Многие ещё до поездки составляют список интересных мест.<br> 
+    В этой статье  собраys достопримечательности Сеула.
+    </p>
+    <h3>Площадь Кванхвамун</h3>
+    <p>Она находится в самом центре, с неё открывается вид на главные ворота дворца Кёнбоккун, которые называются Кванхвамун. Это место является культурным пространством, которое соединяет прошлое и настоящее!<br>
+    Здесь расположен памятник адмиралу Ли Сун Сину, который участвовал в Имджинской войне (1592-1598). Монумент установили в 1968 году. Он находится недалеко от ручья Чхонгечхон, о котором мы скоро расскажем подробнее.<br>
+    В 3 минутах ходьбы от памятника адмиралу находится памятник королю Седжону. По его указу в XV веке был создан корейский алфавит. На площади Кванхвамун есть и другие достопримечательности:
+    </p>
+    <ul>
+    <li>Сухие фонтаны — в том числе повторяющие формы букв корейского алфавита.</li>
+    <li>Лесная зона, чтобы отдохнуть в тени.</li>
+    <li>Пространство для выставок.</li>
+    </ul>
+    <b>Адрес:</b><br><br>
+    172, Sejong-daero, Jongno-gu, Seoul<br>
+    서울특별시 종로구 세종대로 172<br><br>
+    <h3>Кёнбоккун дворец</h3>
+    <p>Если пройти через ворота Кванхвамун, можно увидеть самый первый дворцовый комплекс династии Чосон, возведённый в 1395-м! Именно здесь во время правления короля Седжона было объявлено о создании хунмин чоным (훈민정음) — так изначально назывался хангыль.
+    </p>
+    <p>Во время японского вторжения 1592 года дворец Кёнбоккун разрушил пожар, но его смогли восстановить в 1867-м. Этот комплекс состоит из более чем 10 построек, которые получится посмотреть во время посещения:
+    </p>
+    <ol>
+    <li>Тронный зал Кынчончон (근정전). Главное сооружение дворцового комплекса. Здесь проводили такие важные мероприятия, как коронация.</li>
+    <li>Канёнчон (강녕전), где работал и проводил свободное время король.</li>
+    <li>Чагёнчон (자경전), которое построили для королевы Синджон в 1867 году.</li>
+    <li>Чжибокчжэ (집옥재) возвели в 1891-м. Здесь работал и принимал иностранных послов король Коджон.</li>
+    <li>Сачончон (사정전), где каждое утро король встречался с подданными. Это официальное рабочее место во дворце Кёнбоккун.</li>
+    <li>Кётхэчон (교태전), жилое пространство королевы.</li>
+    <li>Хынбокчон (흥복전) был впервые построен в 1867 году. Здесь встречались иностранные послы из Европы во время правления короля Коджона.</li>
+    <li>Тхэвончон (태원전) использовали как здание, где размещали правителей после смерти. Рядом с ним находятся церемониальные сооружения.</li>
+    <li>Сучончон (수정전) построили во время восстановления дворцового комплекса Кёнбоккун. Здесь находился кабинет министров.</li>
+    <li>Тонгун (동궁) использовали как жилое и образовательное пространство для наследных принца и принцессы.</li>
+    <li>Беседка Хянвончон (향원정) на острове посреди пруда была возведена в 1873 году, когда по приказу короля Коджона построили дворец Кончхонгун.</li>
+    <li>Павильон Кёнхеру (경회루) использовали для масштабных банкетов.</li>
+    <li>Соджубан (소주방), или королевская кухня.</li>
+    <li>Кончхонгун (건청궁) служил жилым помещением для короля и королевы.</li>
+    </ol>
+    <p>На сайте достопримечательности можно выбрать маршрут в зависимости от времени прогулки. Кроме того, на территории комплекса находится Национальный дворцовый музей.
+    </p>
+    <p>Стоимость входного билета: 3 тыс. вон (взрослый).</p>
+    <p><b>Адрес (Кёнбоккун Сеул):</b><br><br>
+    161, Sajik-ro, Jongno-gu, Seoul<br>
+    서울특별시 종로구 사직로 161<br><br>
+    </p>
+    <h3>Сеульская телебашня</h3>
+    <p>Другое название этого сооружения — Башня Намсан / Башня N — связано с местоположением объекта. Телебашня в Сеуле стала первой радиоволновой в Южной Корее: её открыли для посещения в 1980 году.<br>
+    Добраться до Башни Намсан можно на фуникулёре, а также через парк Намсан и фольклорную деревню.</p>
+    <p>На территории Сеульской телебашни есть свои достопримечательности! Это смотровая площадка, медиапространство. Здесь также находятся различные рестораны, фотозоны, сувенирные магазины, зоны для отдыха и автоматы с капсулами времени!</p>
+    <p>Стоимость билета в обсерваторию для взрослого: 21 тыс. вон.</p>
+    <p><b>Адрес:</b></p>
+    <p>105, Namsangongwon-gil, Yongsan-gu, Seoul<br>
+    서울특별시 용산구 남산공원길 105</p>",
+    1),
+    ('Феномен культуры рассады яблонь',
+    "<p>최근 '금사과' '애플플레이션(Apple＋Inflation)'란 말이 화두였어요. 이상기후 등으로 사과 재배가 어려워져 생샨량이 줄자 사과 값이 폭등했거든요. 이에 외국에서 사과를 수입하자는 목소리가 커졌고, 정부는 수입이 어려운 이유를 설명하며 국내 생산량을 늘리기 위한 다양한 대책 마련에 나서기도 했죠.
+    </p>
+    <p>비싼 사과 값이 떨어지기를 기다리거나, 다른 과일을 사 먹는 대신 사과를 직접 기르는 가정이 늘어나고 있어요. 묘목(苗木) 시장에선 사과나무 품귀(品貴·물건을 구하기 어려움) 현상도 나타났답니다. 충북 옥천에서 그린묘목농원을 운영하는 김태형씨는 '사과나무가 거의 품절'이라며 '사과 생산량이 적으니 직접 기르려는 사람들이 많다'고 말했어요. 그가 운영하는 묘목 판매 홈페이지를 들어가 보니 사과나무 카테고리엔 '품절'이라는 단어가 가득했죠.
+    </p>
+    <p>그렇다면 사과나무는 어떤 환경에서 잘 자라며 어떻게 키워야 재배할 수 있을까요? 사과나무는 연평균 기온이 8~11℃의 서늘한 기후에서 잘 자라요. 이 외에도 낮과 밤의 온도 교차는 과실(果實)*의 착색, 당 함량과 관련이 있죠. 밤의 온도가 낮을수록 과실의 착색과 당 생성에 효과적이에요. 사과 나무를 재배할 때 유의할 점은 건조한 시기에 더욱 신경써야 한다는 겁니다. 복숭아나무나 포도나무처럼 건조함에 잘 견디지 못해 건조한 시기엔 관수(灌水·식물에 토양 수분이 부족할 때 물을 인위적으로 주는 것)가 중요해요. 나무를 심을 땐, 1m 이상 깊이의 땅에 심어야 뿌리를 잘 내릴 수 있죠. 사과나무는 
+    <ul>
+    <li>5월 갈색무늬병</li> 
+    <li>6월 겹무늬썩음병</li> 
+    <li>7·8월 사과혹진딧물</li> 
+    <li>8·9월 탄저병 등 병충해로 시들 수 있어</li>
+    </ul>
+    시기별로 병충해 방제(防除) 작업에 신경 써야 한답니다.
+    </p>",
+    2);
+
+INSERT INTO vocabulary (korean, transcription, russian) 
+VALUES 
+    ('저기요', '[чогиё]', 'извините'),
+    ('씨', '[щи]', 'мистер, миссис'),
+    ('안녕하세요', '[аннёнхасэё]', 'Здравствуйте'),
+    ('처음 뵙겠습니다', '[чоым пэпгэсымнида]', 'Приятно познакомиться'),
+    ('반갑습니다', '[пангапсымнида]', 'Рад(-а) тебя видеть'),
+    ('한국', '[хангук]', 'Корея'),
+    ('러시아', '[рощиа]', 'Россия'),
+    ('뭐', '[мо]', 'что (вопросительная частица)'),
+    ('의자', '[ыйджа]', 'стул'),
+    ('가방', '[кабан]', 'сумка'),
+    ('학생', '[хаксэн]', 'студент'),
+    ('친구', '[чингу]', 'друг'),
+    ('모자', '[моджа]', 'шляпа'),
+    ('가수', '[касу]', 'певец'),
+    ('시계', '[щиге]', 'часы'),
+    ('누구', '[нугу]', 'кто'),
+    ('사람', '[сарам]', 'человек'),
+    ('이름', '[ирым]', 'имя'),
+    ('저는', '[чонын]', 'друг'),
+    ('모자', '[моджа]', 'я'),
+    ('요리사', '[ёриса]', 'повар'),
+    ('직업', '[чигоп]', 'работа'),
+    ('경찰관', '[кёнъчхальгван]', 'полицейский'),
+    ('회사', '[хвеса]', 'офис'),
+    ('선생님', '[сонсэнъним]', 'учитель'),
+    ('의사', '[ыйса]', 'врач'),
+    ('간호사', '[канхоса]', 'медсестра'),
+    ('변호사', '[пёнхоса]', 'адвокат'),
+    ('농부', '[нонъбу]', 'фермер'),
+    ('미국', '[мигук]', 'Америка'),
+    ('디자이너', '[тиджаино]', 'дизайнер'),
+    ('부모님', '[пумоним]', 'родители'),
+    ('아버지', '[абоджи]', 'отец'),
+    ('어머니', '[омони]', 'мать'),
+    ('선생님', '[сонсэним]', 'учитель'),
+    ('도교', '[токё]', 'Токио'),
+    ('어때', '[оттэ]', 'как Вам'),
+    ('앞', '[ап]', 'Перед'),
+    ('뒤', '[тви]', 'Назад'),
+    ('위', '[ви]', 'Над'),
+    ('아래', '[арэ]', 'Под'),
+    ('밑', '[мит]', 'под'),
+    ('옆', '[ёп]', 'сбоку'),
+    ('오른쪽', '[орынччок]', 'справа'),
+    ('왼쪽', '[ынччок]', 'слева'),
+    ('가운데', '[каундэ]', 'посередине'),
+    ('사이', '[саи]', 'между'),
+    ('안', '[ан]', 'внутри'),
+    ('밖', '[пакк]', 'снаружи'),
+    ('학교', '[хаккё]', 'школа'),
+    ('은행이', '[ынхэни]', 'банк'),
+    ('자전거가', '[чаджонгога]', 'велосипед'),
+    ('차가', '[чхага]', 'машина'),
+    ('언니', '[онни]', 'старшая сестра'),
+    ('동생', '[тонсэн]', 'младший брат/сестра'),
+    ('고양이', '[кояни]', 'котёнок'),
+    ('강아지', '[канаджи]', 'щенок'),
+    ('인형이', '[инхёни]', 'кукла'),
+    ('화분이', '[хвабуни]', 'цветочный горшок'),
+    ('화분하고', '[хвабунхаго]', 'в горшке'),
+    ('옷걸이가', '[отгорига]', 'вешалка'),
+    ('책장', '[чэкджан]', 'книжная полка'),
+    ('구두', '[куду]', 'туфли, ботинки'),
+    ('책상', '[чхэксан]', 'письменный стол'),
+    ('컴퓨터', '[компюто]', 'компьютер'),
+    ('꽃', '[ккот]', 'цветок'),
+    ('병이', '[бёни]', 'недуг'),
+    ('신문이', '[щинмуни]', 'газета'),
+    ('햄버거', '[хэмбого]', 'гамбургер'),
+    ('먹다', '[мокта]', 'есть'),
+    ('기다리다', '[кидарида]', 'ждать'),
+    ('읽다', '[ильгта]', 'читать'),
+    ('가다', '[када]', 'идти'),
+    ('운동하다', '[ундонхада]', 'упражняться'),
+    ('만나다', '[манида]', 'встречать'),
+    ('쓰다', '[ссыда]', 'гладить'),
+    ('사다', '[сада]', 'покупать'),
+    ('하다', '[хада]', 'делать'),
+    ('일기', '[ильги]', 'дневник'),
+    ('책', '[чхэк]', 'книга'),
+    ('아침', '[аджим]', 'утро'),
+    ('운동', '[ундон]', 'упражнение'),
+    ('직업이', '[чигопи]', 'работа'),
+    ('보통', '[ботон]', 'обычно'),
+    ('점심', '[чомщим]', 'обед'),
+    ('숙제', '[сукджэ]', 'домашнее задание'),
+    ('잠', '[чам]', 'спать'),
+    ('버다', '[бода]', 'зарабатывать'),
+    ('냉면', '[нэнмён]', 'холодная лапша'),
+    ('공부하다', '[конбукхада]', 'изучать'),
+    ('마시다', '[мащида]', 'напиток'),
+    ('물', '[муль]', 'вода'),
+    ('하루', '[хару]', 'день'),
+    ('작년', '[чакнён]', 'в прошлом году'),
+    ('종일', '[чон иль]', 'весь день'),
+    ('서관', '[согван]', 'учебник'),
+    ('어제', '[очэ]', 'вчера'),
+    ('선물', '[сонмуль]', 'подарок'),
+    ('영화', '[ёнхва]', 'подарок'),
+    ('주말', '[чумаль]', 'выходные'),
+    ('음악', '[ымак]', 'музыка');
+
+INSERT INTO lesson (lesson_title, lesson_description, lesson_short_description) 
+VALUES 
+    ('Введение', 
+    "<ul>
+    <li>Корейский алфавит</li>
+    <li>правила чтения</li>
+    <li>порядок слов в корейском предложении</li>
+    <li>предикативы и их спряжения</li>
+    <li>стили речи</li>
+    </ul>", 
+    'Основы корейского языка'),
+    ('1 урок', '<ul><li>Именное сказуемое</li> <li>связка 이다</li></ul>', 'Именное сказуемое и связка 이다'),
+    ('2 урок', '<ul><li>Окончания существительных -은 / -는</li> <li> множественное число</li> <li> как приветствовать человека </li> <li>спросить кем он работает</li> </ul>', 'Окончания существительных -은 / -는'),
+    ('3 урок', '<p>Окончание глагола -있다</p>', 'Связка -있다'),
+    ('4 урок', '<p>Окончание Глаголов/Прилагательных - (스)ㅂ니다 настоящего времени</p>', 'Окончание Гл/Прил - (스)ㅂ니다 настоящего времени'),
+    ('5 урок', '<p>Окончание Глаголов/Прилагательных - 아/어요 настоящего времени</p>', 'Окончание Гл/Прил - 아/어요 настоящего времени'),
+    ('6 урок', '<p>Окончание Глаголов/Прилагательных - 았/었어요 прошедшего времени</p>', 'Окончание Гл/Прил - 았/었어요 прошедшего времени'),
+    ('7 урок', '<p>Окончание Глаголов - (으)ㄹ 거예요 будущего времени</p>', 'Окончание Гл - (으)ㄹ 거예요 будущего времени'),
+    ('8 урок', '<p>Окончание Глаголов - 거 있다 настоящего продолженного времени</p>', 'Окончание Гл - 거 있다 настоящего продолженного времени'),
+    ('9 урок', '<p>Окончание Глаголов/Прилагательных - 았/었었어요 прошедшего совершенного времени</p>', 'Окончание Гл/Прил - 았/었었어요 прошедшего совершенного времени'),
+    ('10 урок', '<p>Числительные</p>', 'Числительные'),
+    ('11 урок', '<ul><li>Время</li> <li>числа</li> <li>дни недели</li> </ul>', 'Число и день недели'),
+    ('12 урок', '<p>Окончание Глаголов - (으)ㄹ 거예요 будущего времени</p>', 'Окончание Гл - (으)ㄹ 거예요 будущего времени'),
+    ('13 урок', '<p>Окончание Глаголов - 거 있다 настоящего продолженного времени</p>', 'Окончание Гл - 거 있다 настоящего продолженного времени'),
+    ('14 урок', '<p>Окончание Глаголов/Прилагательных - 았/었었어요 прошедшего совершенного времени</p>', 'Окончание Гл/Прил - 았/었었어요 прошедшего совершенного времени'),
+    ('15 урок', '<p>Числительные</p>', 'Числительные'),
+    ('16 урок', '<ul><li>Время</li> <li>числа</li> <li>дни недели</li> </ul>', 'Число и день недели'),
+    ('17 урок', '<p>Окончание Глаголов - (으)ㄹ 거예요 будущего времени</p>', 'Окончание Гл - (으)ㄹ 거예요 будущего времени'),
+    ('18 урок', '<p>Окончание Глаголов - 거 있다 настоящего продолженного времени</p>', 'Окончание Гл - 거 있다 настоящего продолженного времени'),
+    ('19 урок', '<p>Окончание Глаголов/Прилагательных - 았/었었어요 прошедшего совершенного времени</p>', 'Окончание Гл/Прил - 았/었었어요 прошедшего совершенного времени'),
+    ('20 урок', '<p>Числительные</p>', 'Числительные');
+
+INSERT INTO task_voc (task_description, max_task_score) 
+VALUES 
+    ('Прочитайте и выучите слова, приведенные ниже:', 10),
+    ('Прочитайте и выучите слова, приведенные ниже:', 10),
+    ('Прочитайте и выучите слова, приведенные ниже:', 10),
+    ('Прочитайте и выучите слова, приведенные ниже:', 10),
+    ('Прочитайте и выучите слова, приведенные ниже:', 10),
+    ('Прочитайте и выучите слова, приведенные ниже:', 10);
+
+INSERT INTO lesson_task_voc (lesson_id, task_voc_id)
+VALUES
+    (2, 1),
+    (3, 2),
+    (4, 3),
+    (5, 4),
+    (6, 5),
+    (7, 6);
+
+INSERT INTO task_voc_vocabulary (task_voc_id, vocabulary_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5),
+    (1, 6),
+    (1, 7),
+    (1, 8),
+    (1, 9),
+    (1, 10),
+    (1, 11),
+    (1, 12),
+    (1, 13),
+    (1, 14),
+    (1, 15),
+    (1, 16),
+    (2, 17),
+    (2, 18),
+    (2, 19),
+    (2, 20),
+    (2, 21),
+    (2, 22),
+    (2, 23),
+    (2, 24),
+    (2, 25),
+    (2, 26),
+    (2, 27),
+    (2, 28),
+    (2, 29),
+    (2, 30),
+    (2, 31),
+    (2, 32),
+    (2, 33),
+    (2, 34),
+    (2, 35),
+    (2, 36),
+    (2, 37),
+    (3, 38),
+    (3, 39),
+    (3, 40),
+    (3, 41),
+    (3, 42),
+    (3, 43),
+    (3, 44),
+    (3, 45),
+    (3, 46),
+    (3, 47),
+    (3, 48),
+    (3, 49),
+    (3, 50),
+    (3, 51),
+    (3, 52),
+    (3, 53),
+    (3, 54),
+    (3, 55),
+    (3, 56),
+    (3, 57),
+    (3, 58),
+    (3, 59),
+    (3, 60),
+    (3, 61),
+    (3, 62),
+    (3, 63),
+    (3, 64),
+    (3, 65),
+    (3, 66),
+    (3, 67),
+    (3, 68),
+    (4, 69),
+    (4, 70),
+    (4, 71),
+    (4, 72),
+    (4, 73),
+    (4, 74),
+    (4, 75),
+    (4, 76),
+    (4, 77),
+    (4, 78),
+    (4, 79),
+    (4, 80),
+    (4, 81),
+    (4, 82),
+    (4, 83),
+    (5, 84),
+    (5, 85),
+    (5, 86),
+    (5, 87),
+    (5, 88),
+    (5, 89),
+    (5, 90),
+    (5, 91),
+    (5, 92),
+    (5, 93),
+    (6, 94),
+    (6, 95),
+    (6, 96),
+    (6, 97),
+    (6, 98),
+    (6, 99),
+    (6, 100),
+    (6, 101),
+    (6, 102);
+
+
+INSERT INTO lesson_task_theory(lesson_id, task_theory_id)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 1),
+    (9, 2),
+    (10, 3),
+    (11, 4),
+    (12, 5);
+
+
+INSERT INTO task_theory_theory(task_theory_id, theory_id)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7);
+
+
+INSERT INTO task_dialogue (task_description, max_task_score) 
+VALUES 
+    ('Внимательно прочитайте диалоги:', 10),
+    ('Внимательно прочитайте диалоги:', 10),
+    ('Внимательно прочитайте диалоги:', 10),
+    ('Внимательно прочитайте диалоги:', 10),
+    ('Внимательно прочитайте диалоги:', 10),
+    ('Внимательно прочитайте диалоги:', 10);
+
+
+INSERT INTO dialogue (dialogue_content) 
+VALUES 
+    ('А: 무엇입니까? (= 뭐예요?)<br>
+    Что это?<br>
+    B: 의자입니다. (= 의자예요.)<br>
+    Это стул.'),
+    ('A: 한국 사람입니까? (= 한국 사람이에요?)<br>
+    Она кореянка?<br>
+    B: 네, 한국 사람입니다. (= 한국 사람이에요.)<br>
+    Да, она кореянка.'),
+    ('A: 어디입니까? (= 어디예요?)<br>
+    Что это?<br>
+    B: 한국입니다. (= 한국이에요.)<br>
+    Это Корея.'),
+    ('А: 무엇입니까?<br>
+    Что это?<br>
+    В: 간방입니다.<br>
+    Это сумка.'),
+    ('А: 학생입니까?<br>
+    Вы студент?<br>
+    В: 네, 학생입니다.<br>
+    Да, я студент.'),
+    ('А: 누구예요?<br>
+    Кто это?<br>
+    В: 친구예요.<br>
+    Это мой друг.'),
+    ('A: 안녕하세요? 저는 댄입니다.<br>
+    Привет. Я Дэн.<br>
+    B: 안녕하세요? 저는 캐럴이에요. 미국 사람이에요.<br>
+    Привет. Я Кэрол. Я американка.'),
+    ('A: 부모님 직업이 뭐예요?<br>
+    Чем занимаются Ваши родители?<br>
+    B: 아버지는 회사원이에요. 그리고 어머니는 선생님이에요.<br>
+    Мой отец работает в компании, а мама работает учителем.'),
+    ('A: 도쿄가 어때요?<br>
+    Как Вам Токио?<br>
+    В: 도쿄는 많이 복잡해요.<br>
+    В Токио очень много людей.'),
+    ('A: 책이 어디에 있어요?<br>
+    Где находится книга?<br>
+    В: 가방 안에 있어요.<br>
+    Она в моей сумке.'),
+    ('A: 은행이 어디에 있어요?<br>
+    Где находится банк?<br>
+    B: 학교 옆에 있어요.<br>
+    Рядом со школой.'),
+    ('A: 한국 친구가 있어요?<br>
+    У вас есть корейские друзья?<br>
+    B: 네, 한국 친구가 있어요.<br>
+    Да, у меня есть корейские друзья.'),
+    ('A: 컴퓨터가 있어요?<br>
+    У вас есть компьютер?<br>
+    B: 네, 있어요.<br>
+    Да, есть.'),
+    ('A: 학교에 갑니까?<br>
+    Вы идете в школу?<br>
+    B: 네,학교에 갑니다.<br>
+    Да, я иду в школу.'),
+    ('A: 아침을 먹습니까?<br>
+    Вы обычно завтракаете?<br>
+    B: 네,먹습니다.<br>
+    Да, обычно я завтракаю.'),
+    ('A: 운동을합니까?<br>
+    Вы занимаетесь спортом?<br>
+    B: 네,운동을 합니다.<br>
+    Да, я занимаюсь спортом.'),
+    ('A: 지금 뭐 해요?<br>
+    Что Вы сейчас делаете?<br>
+    В: 숙제해요.<br>
+    Я делаю домашнее задание.'),
+    ('A: 및 시에 점심을 먹어요?<br>
+    Во сколько Вы обычно обедаете?<br>
+    B: 보통 1시에 점심을 먹어요<br>
+    Обычно я обедаю в час.'),
+    ('A: 민우 씨는 직업이 뭐예요?<br>
+    Кем работает Мину?<br>
+    В: 선생님이에요<br>
+    Он учитель.'),
+    ('A: 어제 뭐 했어요?<br>
+    Что Вы делали вчера?<br>
+    В: 공부했어요.<br>
+    Учился.'),
+    ('A: 토요일에 영화를 봤어요?<br>
+    Вы смотрели фильм в субботу?<br>
+    B: 네, 봤어요. 재미있었어요.<br>
+    Да, я смотрел фильм. Он был интересный.'),
+    ('A: 주말에 뭐 했어요?<br>
+    Что Вы делали все выходные?<br>
+    B: 음악을 들었어요.<br>
+    Я слушал музыку.');
+
+
+INSERT INTO task_dialogue_dialogue(task_dia_id, dialogue_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (1, 5),
+    (1, 6),
+    (2, 7),
+    (2, 8),
+    (2, 9),
+    (3, 10),
+    (3, 11),
+    (3, 12),
+    (3, 13),
+    (4, 14),
+    (4, 15),
+    (4, 16),
+    (5, 17),
+    (5, 18),
+    (5, 19),
+    (6, 20),
+    (6, 21),
+    (6, 22);
+
+
+INSERT INTO lesson_task_dia(lesson_id, task_dia_id)
+VALUES
+    (2, 1),
+    (3, 2),
+    (4, 3),
+    (5, 4),
+    (6, 5),
+    (7, 6);
+
+

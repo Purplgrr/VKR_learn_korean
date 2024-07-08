@@ -1,0 +1,119 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}{{page_title}}{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lesson_page' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% macro render_task_complete_sentence(data) %}
+    <div>
+        {% for row_index, item in enumerate(data) %}
+            <div>
+                <div class="dropdown">
+                    {{row_index + 1}}. {{item['sentence'].split(';')[0]}}
+                    <button class="dropbtn">
+                        <span {% if item['complete_sentence_exercise_id'] in correct_completed_exercise %} style="color:green" {% endif %}>
+                            {{completed_words.split(';')[list(completed_sentence_exercise.split(';')).index(item['complete_sentence_exercise_id'] | string)]}}
+                        </span>    
+                    </button>
+                    {{item['sentence'].split(';')[1]}}
+                    <div class="dropdown-content" style="width: 100%; padding: 25px; padding-top: 30px;">
+                        <div class="row-flex">
+                            {% for index in range(item['words'].split(';') | length) %}
+                                <form action="" method="post">
+                                    <input type="text" value="{{completed_sentence_exercise}}" name="completed_sentence_exercise" hidden />
+                                    <input type="text" value="{{item['complete_sentence_exercise_id']}}" name="complete_sentence_exercise_id" hidden />
+                                    <input type="text" value="{{completed_words}}" name="completed_words" hidden />
+                                    <input type="text" value="{{item['complete_word_ids'].split(';')[index]}}" name="complete_word_id" hidden />
+                                    <input type="text" value="{{item['correct_answers'].split(';')[index]}}" name="is_correct" hidden />
+                                    <input type="submit" value="{{item['words'].split(';')[index]}}" name="check_word" />
+                                </form>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% block main_info %}
+<div class="central-block">
+    <div class="block-center-left_menu">
+        <form action="{{url_for('lessons')}}" method="post">
+            <input class="button-back-lessons" type=submit name="button-back" value='◀ К урокам' />
+        </form>
+    </div>
+    <div class="block-center-right">
+        <div class="lesson_name">
+            Входное тестирование
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width:900px;">
+            <div class="task-description">
+                Входное тестирование поможет системе определить ваш уровень и сразу предоставить доступ к урокам, соответствующим вашему уровню
+            </div>
+        </div>
+        <div style="width: 900px;">
+            {{render_task_complete_sentence(complete_sentence_task)}}
+        </div>
+        
+        
+        <form action="" method="post" style="display:flex; flex-direction:row; justify-content:center; width: 900px;">
+            <input type="text" value="{{completed_sentence_exercise}}" name="completed_sentence_exercise" hidden />
+            <input type="text" value="{{completed_words}}" name="completed_words" hidden />
+
+            <input class="button-back-lessons" type="submit" name="check" value="Завершить"  />
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }} <a href={{url_for('lessons')}} style="text-decoration: none; font-weight: bold; color: #F27333;">Перейти к урокам</a></p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+        

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/decoration.css')}}">
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+        <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&amp;family=Open+Sans:wght@700&amp;display=swap" rel="stylesheet"/>
+        <title>{% block page_name %}{% endblock %}</title>
+    </head>
+    <body>
+        <div class="page-content">
+        {% block menu %}{% endblock %}
+        
+        {% block main_info %}{% endblock %}
+        </div>
+    </body>
+
+    <footer class="page-footer">
+        {% block footer %}{% endblock %}
+    </footer>
+</html>

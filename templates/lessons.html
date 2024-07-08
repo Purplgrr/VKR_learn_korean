@@ -1,0 +1,106 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Уроки{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center; margin-right: 30px;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% macro render_lessons(data, index, value) %}
+    {% for item in data %}
+        {% if item[index] in unlocked_lessons %}
+            <div class="block-lesson">
+                <p>
+                    <a href="{{url_for('lesson_page', lesson_id=item[index])}}">
+                        {{item[value]}}
+                    </a>
+                </p>
+            </div>
+        {% else %}  
+            <div class="block-lesson" style="background-color: #97ddf9bd;">
+                <p>
+                    <!-- <a href="{{url_for('lesson_page', lesson_id=item[index])}}"> -->
+                        {{item[value]}}
+                    <!-- </a> -->
+                </p>
+            </div>
+        {% endif %}
+   {% endfor %}
+{% endmacro %}
+
+{% block main_info %}
+    <div class="main-block-lessons">
+        <div class="first-underblock">
+            {{render_lessons(lessons_, 'lesson_id', 'lesson_title')}}
+        </div>
+        
+            <div class="second-underblock">
+                <div class="first-block block-progress" style="font-size: 18px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);">
+                    <p style="margin-top: 0px; color:#6f6d6d;">Ваш прогресс</p>
+                        <div style="margin-top: 35px; font-size: 35px; color:#F27333">{{lesson_percentage}}%</div>
+                        <div style="font-weight: 100; margin-top: 35px; color:#6f6d6d;">изученного материала</div>
+                </div>
+                <div style=" display:flex; flex-direction:column;" class="button">
+                    <form action="{{url_for('lesson_page', lesson_id=session.get('lesson_id', 1))}}" method="post">
+                        <input class='button-styles' type="submit" name="continue" value="Продолжить" />
+                    </form>
+                    <form action="{{url_for('enter_test')}}" method="post">
+                        <input class='button-styles' style="background-color: white; color: #6f6d6d; border: solid #31AADA; margin-top: 15px; font-weight: 100;" type="submit" name="continue" value="Пройти входное тестирование" />
+                        </form>
+                </div>
+                    <!-- <div class="button">
+                        <form action="{{url_for('lesson_page', lesson_id=session.get('lesson_id', 1))}}" method="post">
+                        <input class='button-styles' type="submit" name="continue" value="Продолжить" />
+                    </form>
+                    </div>
+
+                    <div class="button" >
+                        <form action="{{url_for('enter_test')}}" method="post">
+                        <input class='button-styles' style="background-color: white; color: #6f6d6d;" type="submit" name="continue" value="Пройти входное тестирование" />
+                        </form>
+                    </div> -->
+            </div>
+        
+        
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}

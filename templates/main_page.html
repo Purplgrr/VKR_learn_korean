@@ -1,0 +1,131 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Главная{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_info %}
+    <div class = "main-block">
+        <div class="top-block">
+            <p class = "huge-title">
+                
+                {% if is_login %}
+                     С возвращением!
+                {% else %}
+                    Добро пожаловать!
+                {% endif %}
+            </p>
+        </div>
+            
+        <!-- <div class="top-block">
+            
+            <img class="girl" src="/static/images/IMin1KPrvRjX3tPrnf2np-transformed.png"/>
+        </div> -->
+        <div class="flex row underblock">
+            <div class="first-block">
+                <p style="margin-top: 0px; color:#6f6d6d;">Ваш прогресс</p>
+                {% if is_login %}
+                    <div style="margin-top: 50px; font-size: 37px; color:#F27333">{{lesson_percentage}}%</div>
+                    <div style="font-weight: 100; margin-top: 35px; color:#6f6d6d;">изученного материала</div>
+                {% else %}
+                    <form action="{{url_for('login_page')}}" method="post">
+                        <input class="button-forwardsss" style="margin-top: 25px;" type="submit" value="Войти в систему" />
+                    </form>
+                {% endif %}
+            </div>
+            <div class="second-block">
+                <p style="margin-top: 0px; color:#6f6d6d;">Продолжить обучение</p>
+                {% if is_login %}
+                    <div style="display: flex; flex-direction: row; justify-content:space-between; margin-top: 50px;">
+                        <div style="text-align: left;">
+                            <div style="color:#6f6d6d; font-size: 16px; padding-bottom: 10px;">{{lesson_name}}:</div>
+                            <div style="color: #2c2a2a; font-weight: 100; font-size: 16px;">{{lesson_short_description}}</div>
+                        </div>
+                        <form style="align-items: center;" action="{{url_for('lesson_page', lesson_id=session.get('lesson_id', 1))}}" method="post">
+                            <input class="button-forward" type="submit" value="Перейти" />
+                        </form>
+                    </div>
+                    <div class="progress-barr">
+                        <div class="progresss" style="--score: {{ lesson_user_score }}; --max-score: {{ lesson_max_score }}"></div>
+                    </div>
+                {% else %}
+                    <form action="{{url_for('login_page')}}" method="post">
+                        <input class="button-forwardsss" style="margin-top: 25px;" type="submit" value="Войти в систему" />
+                    </form>
+                {% endif %}
+            </div>
+            <div class="third-block">
+                <p style="margin-top: 0px; color:#6f6d6d;">Слово дня</p>
+                {% if is_login %}
+                    <div>
+                        <form action="" method="post">
+                            <div style="display: flex; flex-direction: row; justify-content: center; margin-top: 50px;">
+                                <div style="font-size: 37px; color:#F27333;">{{random_word['korean']}}</div>
+                                <div style="margin-top: 15px; margin-left:35px;">
+                                    <input type="text" name="vocabulary_id" value="{{random_word['vocabulary_id']}}" hidden />
+                                    {% if random_word['user_id'] %}
+                                        <button class="delete-btn" type="submit" name="del_to_fav"/>
+                                    {% else %}
+                                        <button class="add-btn" type="submit" name="add_to_fav"/>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: row; color:#6f6d6d; font-weight: 100; justify-content: center; margin-top: 35px;">
+                                <div style="margin-right: 15px;">{{random_word['transcription']}}</div>
+                                <div>{{random_word['russian']}}</div>
+                            </div>
+                        </form>
+                    </div>
+                {% else %}
+                    <form action="{{url_for('login_page')}}" method="post">
+                        <input class="button-forwardsss" style="margin-top: 25px;" type="submit" value="Войти в систему" />
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+        

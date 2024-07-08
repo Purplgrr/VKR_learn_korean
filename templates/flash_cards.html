@@ -1,0 +1,87 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Избранное{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_info %}
+<div class="flex row">
+    <form action="{{url_for('favourites')}}" method="post">
+        <input class="button-back" type=submit name="button-back" value='◀  Назад' />
+    </form>
+    <div class="flash-card-container">
+        <div class="title-cards">
+            Флеш-карточки
+        </div>
+        <form action="" method="post">
+            <div class="two-button-card-container">
+                <input type="submit" name="previous" value="Предыдущая карточка" class="flash-card-button prev-button" />
+                <div class="flash-card">
+                    <div class="flash-card-content">
+                        <input type="text" value="{{word_index}}" name="word_index" hidden />
+                        <input type="text" value="{{show_answer}}" name="show_answer" hidden />
+                        {% if not show_answer %}
+                            <div class="visible-part">{{flash_cards[word_index]['visible_part']}}</div>
+                        {% else %}
+                            <div class="hidden-part">{{flash_cards[word_index]['hidden_part']}}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <input type="submit" name="next" value="Следующая карточка" class="flash-card-button next-button" />
+            </div>
+            <div class="button-container">
+                {% if not show_answer %}
+                    <input type="submit" name="answer_button" value="Перевернуть карточку" class="flash-card-button" />
+                {% else %}
+                    <input type="submit" name="question_button" value="Перевернуть карточку" class="flash-card-button" />
+                {% endif %}
+                
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+        

@@ -1,0 +1,78 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Личная страница{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main_info %}
+    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; width: 550px; margin: auto; margin-top:115px; ">
+        <span style="font-size: 50px; color:#F27333;">Вход в систему:</span>
+        <form class="login-page-block" action="" method="post">
+            <div class="login-password">
+                <label>
+                    <span style="font-weight: bold; color:#6f6d6d; margin-right: 15px;">Логин:</span>
+                    <input style="border: 2px solid #F27333; border-radius:35px; height: 25px; width: 300px;" type="text" name="user_login" />
+                </label>
+            </div>
+            <div class="login-password">
+                <label>
+                    <span style="font-weight: bold; color:#6f6d6d; margin-right: 5px;">Пароль:</span>
+                    <input style="border: 2px solid #F27333; border-radius:35px; height: 25px; width: 300px;" type="text" name="user_password" />
+                </label>
+            </div>
+            <div style="align-self: center; " >
+                <input class="button-forwardsss" type="submit" name="login" value="Войти" />
+            </div>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+ 

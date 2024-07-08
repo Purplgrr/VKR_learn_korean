@@ -1,0 +1,188 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Избранное{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block main_info %}
+    <form action="" method="post" class="flex row buttons">
+        <input type=submit name="vocabulary" value='Слова'{% if fav_category == 'vocabulary' %} class="activee" {% else %} class='non-active'{% endif %} />
+        <input type=submit name="articles" value='Статьи'{% if fav_category == 'articles' %} class="activee" {% else %} class='non-active'{% endif %} />
+        <input type=submit name="theory" value='Теория' {% if fav_category == 'theory' %} class="activee" {% else %} class='non-active'{% endif %}/>
+    </form>
+    {% if fav_category == 'articles' %}
+        {% if not vocabulary %}
+        <div style="margin-top:55px;"><span style="margin:70px; margin-top:70px;">Упс... ничего не найдено</span>
+        </div>
+        {% endif %}
+        {% for article in articles %}
+        <form action="" method="post" class="block-article-shorts">
+            <div style="width: 1350px;">    
+                <a class="article-title" href="{{url_for('full_article', article_id=article['article_id'])}}">{{article['article_name']}}</a>
+                <div class="article-content">
+                    <p>
+                    {{ article['article_content'].split(".")[0] | striptags}}
+                    </p>
+                    <input type=text name="article_id" value="{{article['article_id']}}" hidden />
+                    <button class="delete-btn" type="submit" name="del_article" />
+                </div>
+            </div>
+        </form>
+        {% endfor %}
+    {% elif fav_category == 'vocabulary' %}
+    <div style="display: flex; flex-direction: row; justify-content: center;">
+        <div class="">
+            <div class="table-border">
+                <table>
+                    <tr class="table-title">
+                        <th>Слово</th>
+                        <th>Транскрипция</th>
+                        <th>Перевод</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                {% if not vocabulary %}
+                    <tr>
+                        <td colspan="5">Упс... ничего не найдено</td>
+                    </tr>
+                {% endif %}
+                {% for item in vocabulary %}
+                    <tr>
+                        <form action="" method="post">
+                            <div class="row-flex">
+                                <input type="text" name="vocabulary_id" value="{{item['vocabulary_id']}}" hidden/>
+                                <td>{{item['korean']}}</td>
+                                <td>{{item['transcription']}}</td>
+                                <td>{{item['russian']}}</td>
+                                <td>
+                                    <button class="delete-btn" type="submit" name="del_voc_fav"></button>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="choosed_word" value="{{item['vocabulary_id']}}" />
+                                </td>
+                            </div>
+                        </form>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+            <form action="" method="get" class="flash-button">
+                <input type="text" name="vocabulary_ids" value="" hidden />
+                <input class="flash-button-learn" type="submit" name="flash_card" value="Учить слова" />
+                <p><b>Флеш-карточки:</b></p>
+                <label>
+                    Корейский-русский
+                    <input type="checkbox" value="korean_russian" name="flash_card_params">
+                </label>
+                <label>
+                    Русский корейский
+                    <input type="checkbox" value="russian_korean" name="flash_card_params">
+                </label>
+            </form>
+        </div>
+        <div class="dropdownn" style="background-color: #31AADA; color:#fff; padding: 15px; padding-top: 10px; padding-bottom: 20px; cursor:pointer; font-weight: bold; border-radius: 35px; margin-left: 35px; height: 10px; margin-top: 35px;">
+            ?
+            <div class="dropdown-contentt" style="height: 115px; width: 150px; padding: 17px;">
+                Выберите слова, которые вы хотите выучить, для этого отметьте их галочкой!
+            </div>
+        </div>
+    </div>
+        
+    {% else %}
+    {% if not theories %}
+    <div style="margin-top:55px;"><span style="margin:70px; margin-top:70px;">Упс... ничего не найдено</span>
+    </div>
+        
+    {% endif %}
+    {% for theory in theories %}
+        <form action="" method="post" class="block-article-shorts">
+            <div style="width: 1350px;" >    
+                <a class="article-title" href="{{url_for('theory', theory_id=theory['theory_id'])}}">{{theory['theory_id']}} урок</a>
+                <div class="article-content">
+                    <p>
+                        {{theory['theory_content'].split(".")[0] | striptags}}
+                    </p>
+                    <input type=text name="theory_id" value="{{theory['theory_id']}}" hidden />
+                    <button class="delete-btn" type="submit" name="del_theory" />
+                </div>
+            </div>
+        </form>
+        <!-- <form action="" method="post">
+            <div>    
+                <h3><a href="{{url_for('theory', theory_id=theory['theory_id'])}}">№{{theory['theory_id']}}</a></h3>
+                <p>
+                {{theory['theory_content'].split(".")[0] | safe}}
+                </p>
+                <input type=text name="theory_id" value="{{theory['theory_id']}}" hidden />
+                <input type="submit" name="del_theory" value=Удалить />
+            </div>
+        </form> -->
+    {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+    <script>
+        let choosedWordElements = document.querySelectorAll("input[name='choosed_word']")
+        let vocabularyIds = document.querySelector("input[name='vocabulary_ids']")
+        
+        let selectedValues = []
+        
+        choosedWordElements.forEach((checkbox) => {
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    selectedValues.push(checkbox.value);
+                } else {
+                    const index = selectedValues.indexOf(checkbox.value);
+                    if (index !== -1) {
+                        selectedValues.splice(index, 1);
+                    }
+                }
+                vocabularyIds.value = selectedValues.join(';')
+                // console.log(selectedValues);
+            });
+        });
+    </script>
+{% endblock %}
+        
+        

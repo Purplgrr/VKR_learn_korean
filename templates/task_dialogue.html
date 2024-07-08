@@ -1,0 +1,176 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}{{page_title}}{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lesson_page' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% macro render_voc_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_voc', lesson_id=item[lesson_id], task_voc_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+
+{% endmacro %}
+
+{% macro render_theory_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_theory', lesson_id=item[lesson_id], task_theory_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+
+{% endmacro %}
+
+{% macro render_dia_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_dialogue', lesson_id=item[lesson_id], task_dia_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+
+{% endmacro %}
+
+{% macro render_complete_sentence_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_complete_sentence', lesson_id=item[lesson_id], task_complete_sentence_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+{% endmacro %}
+
+{% macro render_missing_word_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_missing_word_exercise', lesson_id=item[lesson_id], task_missing_word_exercise_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+{% endmacro %}
+
+{% macro render_complete_dialog_task_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_complete_dialog', lesson_id=item[lesson_id], task_complete_dialog_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+{% endmacro %}
+
+{% macro render_complete_dialog_task_with_words_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_complete_dialog_with_words', lesson_id=item[lesson_id], task_complete_dialog_with_words_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+{% endmacro %}
+
+{% macro render_writing_exersice_in_menu(data, index, value, lesson_id) %}
+        {% for item in data %}
+            <li>
+                <a href="{{url_for('task_writing_exercise', lesson_id=item[lesson_id], task_writing_exercise_id=item[index])}}">{{item[value]}}</a>
+            </li> 
+        {% endfor %}
+{% endmacro %}
+
+{% block main_info %}
+<div class="central-block">
+    <div class="block-center-left_menu">
+        <p>Набрано баллов: {{lesson_user_score}}/{{lesson_max_score}}</p>
+        <div class="progress-bar">
+            <div class="progress" style="--score: {{ lesson_user_score }}; --max-score: {{ lesson_max_score }}"></div>
+        </div>
+        <form action="{{url_for('lessons')}}" method="post">
+            <input class="button-back-lessons" type=submit name="button-back" value='◀ К урокам' />
+        </form>      
+        <p>
+            <ul>
+                {{render_voc_task_in_menu(voc_tasks_in_menu, 'task_voc_id', 'task_category', 'lesson_id')}}
+                {{render_theory_task_in_menu(theory_tasks_in_menu, 'task_theory_id', 'task_category', 'lesson_id')}}
+                {{render_dia_task_in_menu(dialog_task_in_menu, 'task_dia_id', 'task_category', 'lesson_id')}}
+                {{render_complete_sentence_task_in_menu(complete_sentence_task_in_menu, 'task_complete_sentence_id', 'task_category', 'lesson_id')}}
+                {{render_missing_word_task_in_menu(missing_word_task_in_menu, 'task_missing_word_exercise_id', 'task_category', 'lesson_id')}}
+                {{render_complete_dialog_task_in_menu(complete_dialog_task_in_menu, 'task_complete_dialog_id', 'task_category', 'lesson_id')}}
+                {{render_complete_dialog_task_with_words_in_menu(complete_dialog_task_with_words_in_menu, 'task_complete_dialog_with_words_id', 'task_category', 'lesson_id')}}
+                {{render_writing_exersice_in_menu(writing_exercise_in_menu, 'task_writing_exercise_id', 'task_category', 'lesson_id')}}
+            </ul> 
+        </p>
+    </div>
+    <div class="block-center-right">
+        <div class="lesson_name">
+            {{page_title}}: <span style="font-size: 20px; font-weight: 300;">{{short_lesson_description}}</span>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width:918px;">
+            <div class="task-description">
+                {{task_description}}
+            </div>
+            <div style="margin-top: 25px; margin-bottom:25px;">
+                <span style="font-weight: bold; color: #F27333;">{{my_task_score}}</span>/{{max_task_score}} {% if my_task_score == max_task_score %}Задание пройдено!{% endif %}
+            </div>
+        </div>
+        <div>
+            <form action="" method="post">
+
+                <div style="border: solid #FEC144; border-radius: 35px; padding: 30px; width: 858px; line-height: 1.9; ">
+                    {{dialogue_task[dialogue_index]['dialogue_content']|safe}}
+                    <input type="text" name="dialogue_index" value="{{dialogue_index}}" hidden />
+                    <input type="text" name="dialogue_id" value="{{dialogue_task[dialogue_index]['dialogue_id']}}" hidden />
+                </div>
+                <div style="display:flex; flex-direction:row; justify-content:center;">
+                    {% if dialogue_index > 0 %}
+                        <p><input class="button-back-lessonss" type="submit" name="previous" value="Назад" /></p>
+                    {% endif %}
+                    
+                    {% if dialogue_index < dialogue_task|length - 1 %}
+                        <p><input  class="button-back-lessons" type="submit" name="next" value="Далее" /></p>
+                    {% else %}
+                        <p><input  class="button-back-lessonss" type="submit" name="check" value="Завершить" {% if my_task_score == max_task_score %}disabled{% endif %} /></p>
+                    {% endif %}
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+        

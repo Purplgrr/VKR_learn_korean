@@ -1,0 +1,74 @@
+{% extends 'common_template.html' %}
+
+{% block page_name %}Статьи{% endblock %}
+
+{% block menu %}
+    <div class = "menu space-between">         
+        <div class="flex row">
+            <ul class="border_menu">
+                <li  {% if request.path == '/' %}class="active"{% endif %}>
+                    <a href = '{{ url_for("main")}}'>
+                        Главная
+                    </a>
+                </li>
+                <li {% if request.path == '/lessons' %}class="active"{% endif %}>
+                    <a href='{{ url_for("lessons")}}'>
+                        Уроки
+                    </a>
+                </li>
+                <li {% if request.path == '/articles' %}class="active"{% endif %}>
+                    <a href='{{ url_for("articles")}}'>
+                        Статьи
+                    </a>
+                </li>
+                <li {% if request.path == '/chat' %}class="active"{% endif %}>
+                    <a href='{{ url_for("chat")}}'>
+                        Онлайн-чат
+                    </a>
+                </li>
+                <li {% if request.path == '/favourites' %}class="active"{% endif %}>
+                    <a href='{{ url_for("favourites")}}'>
+                        Избранное
+                    </a>
+                </li>
+            </ul>
+            <div class="user" style="display: flex; flex-direction:row; align-items: center;">
+                <span style="text-decoration: none; color: #6f6d6d;">{{session.get('user_name', '')}}</span>
+                <a href='{{ url_for("personal_page")}}'>
+                    <div class="image"><img class="avatar" src="/static/images/Avatar.png"/></div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block main_info %}
+    <form action="" method="post" class="flex row buttonss">
+        <input type=submit name="russian_button" value='На русском'{% if article_category_id == 1 %} class="activee" {% else %} class='non-active'{% endif %} />
+        <input type=submit name="korean_button" value='На корейском'{% if article_category_id == 2 %} class="activee" {% else %} class='non-active'{% endif %} />
+    </form>
+    {% for article in articles %}
+    <form action="" method="post" class="block-article-shorts">
+    <div style="width: 1350px;">    
+        <a class="article-title" href="{{url_for('full_article', article_id=article['article_id'])}}">{{article['article_name']}}</a>
+        <div class="article-content">
+            <p>
+            {{ article['article_content'].split(".")[0] | striptags}}
+            </p>
+            <input type=text name="article_id" value={{article['article_id']}} hidden />
+            {% if article['article_id'] in fav_articles %}
+                <button class="delete-btn" type="submit" name="del_fav" value="del" />
+            {% else %}
+                <button class="add-btn" type="submit" name="add_fav" value="add" />
+            {% endif %}
+        </div>
+    </div>
+    </form>
+    {% endfor %}
+{% endblock %}
+
+{% block footer %}
+    <p>&copy; 2024 Learn Korean</p>
+{% endblock %}
+        
